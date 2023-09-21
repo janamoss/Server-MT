@@ -11,15 +11,20 @@ router.get('/register',async (req,res,next)=>{
     try {
         
         const salt = await bcrypt.genSalt(10)
-        const hashedPassword = await bcrypt.hash(req.body.password, salt)
+        const hashedPassword = await bcrypt.hash(req.body.password, salt)        
 
+        const namedata = await User.find()
         const user = new User({
             fullname: req.body.fullname,
             email: req.body.email,
             password: hashedPassword,
         })
 
-        res.send(await user.save())
+        const result = await user.save()
+
+        const {password, ...data} = await result.toJSON()
+        
+        res.send(data)
 
         // const data = await User.find()
         // console.log(data)

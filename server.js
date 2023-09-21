@@ -6,7 +6,7 @@ const PORT = 8080;
 
 const test = "JOhnyy edok"
 
-const dbUrl = "mongodb+srv://Backend:1234@mentordiamond.ualfcpy.mongodb.net/?retryWrites=true&w=majority"
+const dbUrl = "mongodb+srv://Backend:1234@mentordiamond.ualfcpy.mongodb.net/mentordiamond?retryWrites=true&w=majority"
 app.use(cors());
 mongoose.Promise = global.Promise
 

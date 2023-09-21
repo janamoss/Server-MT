@@ -9,7 +9,7 @@ const orderSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    total: Double,
+    total: Number,
     notes: String,
     paymentOption: String,
     shippingOption: String,

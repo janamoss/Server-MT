@@ -12,4 +12,4 @@ const producthascatSchema = new mongoose.Schema({
     
 });
 
-module.exports = mongoose.model('Products_has_Categories', pictureSchema);
+module.exports = mongoose.model('Products_has_Categories', producthascatSchema);

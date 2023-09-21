@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const cors = require("cors");
 const PORT = 8080;
 
-const dbUrl = "mongodb+srv://johnny:test1234@cluster0.e9jvqih.mongodb.net/school?retryWrites=true&w=majority"
+const dbUrl = "mongodb+srv://Backend:1234@mentordiamond.ualfcpy.mongodb.net/?retryWrites=true&w=majority"
 require('dotenv').config();
 app.use(cors());
 mongoose.Promise = global.Promise

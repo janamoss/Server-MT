@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const cors = require("cors");
 const PORT = 8080;
 
-const test = "JOhnyy tEst"
+const test = "JOhnyy edok"
 
 const dbUrl = "mongodb+srv://Backend:1234@mentordiamond.ualfcpy.mongodb.net/?retryWrites=true&w=majority"
 app.use(cors());

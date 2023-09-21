@@ -9,7 +9,7 @@ const orderdetailSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order'
     },
-    size: Number,
+    size: String,
     qty: Number
 });
 

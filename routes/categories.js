@@ -38,3 +38,5 @@ router.post('/addcategories', async (req, res, next) => {
         next(err)
     }
 })
+
+module.exports = router

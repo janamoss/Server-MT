@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
-const Order = require('../models/Orders')
+const User = require('../models/Users')
 
 
 router.use(express.json())
@@ -9,7 +9,7 @@ router.use(express.urlencoded({ extended: false }))
 
 router.get('/',async (req,res,next)=>{
     try {
-        const data = await Order.find()
+        const data = await User.find()
         console.log(data)
         res.json(data)
     } catch (err) {
@@ -17,9 +17,9 @@ router.get('/',async (req,res,next)=>{
     }
 })
 
-router.post('/addOrder', async (req, res, next) => {
+router.post('/addUser', async (req, res, next) => {
     try {
-        const data = await Order.create(req.body)
+        const data = await User.create(req.body)
         console.log(data)
         res.json(data)
     } catch (err) {

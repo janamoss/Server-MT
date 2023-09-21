@@ -13,7 +13,11 @@ router.get('/register',async (req,res,next)=>{
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(req.body.password, salt)        
 
-        const namedata = await User.find()
+        const existingUser = await User.findOne({ email: req.body.email });
+        if (existingUser) {
+            res.status(400).json({ message: 'มีคนใช้อีเมลนี้ไปแล้ว กรุณาลองใหม่อีกครั้งค่ะ.' });
+            return;
+        }
         const user = new User({
             fullname: req.body.fullname,
             email: req.body.email,

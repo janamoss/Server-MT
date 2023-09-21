@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
     profile_picture: String,
     relationship: String,
     isAdmin: Boolean,
+    Address_idAddress:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address'
+    }],
     created_at:{type:Date, default:Date.now},
     updated_at:{type:Date, default:Date.now},
     deleted_at: Date

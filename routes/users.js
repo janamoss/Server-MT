@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken');
 const User = require('../models/Users')
 
 router.use(express.json())
@@ -24,7 +25,7 @@ router.post('/register', async (req, res, next) => {
         fullname: req.body.fullname,
       });
   
-      for (const field of ['phone', 'dateOfbirth', 'gender', 'profile_picture', 'relationship', 'region', 'country', 'city']) {
+      for (const field of ['phone', 'dateOfbirth', 'gender', 'profile_picture', 'relationship']) {
         if (!req.body[field]) {
           user[field] = null;
         }
@@ -66,7 +67,16 @@ router.post('/login' ,async (req, res, next) => {
             })
         }
 
-        res.send(user)
+        const token = jwt.sign({_id:user._id},"secret")
+
+        res.cookie("jwt",token,{
+            httpOnly:true,
+            maxAge: 24 * 60 * 60 * 1000 // 1 วัน
+        })
+
+        res.send({
+           message : "success"
+        })
     } catch (err) {
         next(err)
     }

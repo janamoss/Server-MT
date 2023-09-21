@@ -1,13 +1,17 @@
 const express = require("express");
 const app = express();
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const cors = require("cors");
+const cookieparser = require("cookie-parser");
 const PORT = 8080;
 
 const test = "JOhnyy edok"
 
 const dbUrl = "mongodb+srv://Backend:1234@mentordiamond.ualfcpy.mongodb.net/mentordiamond?retryWrites=true&w=majority"
-app.use(cors());
+app.use(cors({
+    credentials : true,
+    origin:['http://localhost:8080','http://localhost:3000']
+}));
 mongoose.Promise = global.Promise
 
 mongoose.connect(dbUrl,{ useNewUrlParser: true, useUnifiedTopology: true })
@@ -21,6 +25,8 @@ const orderRouter = require('./routes/orders')
 app.use('/product',productRouter)
 app.use('/user',userRouter)
 app.use('/order',orderRouter)
+
+app.use(cookieparser())
 
 app.get("/api/home",(req,res) => {
     res.json({ message: "hello"});

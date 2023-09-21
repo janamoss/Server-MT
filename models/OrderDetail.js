@@ -1,16 +1,17 @@
 const mongoose = require('mongoose');
 
 const orderdetailSchema = new mongoose.Schema({
-    SKUs_idSKUs: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'SKUs'
-    },
     Orders_idOrders: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order'
     },
+    SKUs: [{SKUs_idSKUs:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'SKUs'
+    },
     size: String,
-    qty: Number
+    qty: Number      
+}]
 });
 
 module.exports = mongoose.model('OrderDetail', orderdetailSchema);

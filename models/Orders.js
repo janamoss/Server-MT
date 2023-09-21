@@ -1,10 +1,19 @@
 const mongoose = require('mongoose');
 
-const studentSchema = new mongoose.Schema({
-    idOrders: String,
-    total: String,
-    gender: String,
-    age: Number
+const orderSchema = new mongoose.Schema({
+    idOrders: {
+        type: Number,
+        unique: true
+    },
+    Users_idUser: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    total: Double,
+    notes: String,
+    paymentOption: String,
+    shippingOption: String,
+    status: String
 });
 
-module.exports = mongoose.model('Student', studentSchema);
+module.exports = mongoose.model('Order', orderSchema);

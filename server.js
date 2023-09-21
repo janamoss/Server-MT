@@ -12,6 +12,10 @@ mongoose.connect(dbUrl,{ useNewUrlParser: true, useUnifiedTopology: true })
         .then(() => console.log("Connect to MongoDB"))
         .catch((err) => console.error("Error connecting to MongoDB:", err))
 
+const userRouter = require('./routes/users')
+
+app.use('/user',userRouter)
+
 app.get("/api/home",(req,res) => {
     res.json({ message: "hello"});
 });

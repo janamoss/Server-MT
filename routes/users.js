@@ -48,6 +48,26 @@ router.post('/addUser', async (req, res, next) => {
     }
 })
 
-router.post
+router.post('/login' ,async (req, res, next) => {
+    try {
+        const user = await User.findOne({email: req.body.email})
+
+        if(!user){
+            return res.status(404).send({
+                message: 'user not found'
+            })
+        }
+
+        if (!await bcrypt.compare(req.body.password, user.password)){
+            return res.status(404).send({
+                message: 'invalid credentials'
+            })
+        }
+
+        res.send(user)
+    } catch (err) {
+        next(err)
+    }
+})
 
 module.exports = router

@@ -56,13 +56,13 @@ router.post('/login' ,async (req, res, next) => {
 
         if(!user){
             return res.status(404).send({
-                message: 'user not found'
+                message: 'อีเมลของคุณไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง'
             })
         }
 
         if (!await bcrypt.compare(req.body.password, user.password)){
             return res.status(404).send({
-                message: 'invalid credentials'
+                message: 'รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง'
             })
         }
 

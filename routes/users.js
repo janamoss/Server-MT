@@ -27,4 +27,6 @@ router.post('/addUser', async (req, res, next) => {
     }
 })
 
+router.post
+
 module.exports = router

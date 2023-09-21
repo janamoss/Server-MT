@@ -7,36 +7,38 @@ const User = require('../models/Users')
 router.use(express.json())
 router.use(express.urlencoded({ extended: false }))
 
-router.get('/register',async (req,res,next)=>{
+router.post('/register', async (req, res, next) => {
     try {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
         
-        const salt = await bcrypt.genSalt(10)
-        const hashedPassword = await bcrypt.hash(req.body.password, salt)        
-
         const existingUser = await User.findOne({ email: req.body.email });
         if (existingUser) {
-            res.status(400).json({ message: 'มีคนใช้อีเมลนี้ไปแล้ว กรุณาลองใหม่อีกครั้งค่ะ.' });
-            return;
+          res.status(400).json({ message: 'อีเมลนี้ถูกใช้งานแล้ว กรุณาลองใหม่อีกครั้ง' });
+          return;
         }
-        const user = new User({
-            fullname: req.body.fullname,
-            email: req.body.email,
-            password: hashedPassword,
-        })
-
-        const result = await user.save()
-
-        const {password, ...data} = await result.toJSON()
-        
-        res.send(data)
-
-        // const data = await User.find()
-        // console.log(data)
-        // res.json(data)
+  
+      const user = new User({
+        email: req.body.email,
+        password: hashedPassword,
+        fullname: req.body.fullname,
+      });
+  
+      for (const field of ['phone', 'dateOfbirth', 'gender', 'profile_picture', 'relationship', 'region', 'country', 'city']) {
+        if (!req.body[field]) {
+          user[field] = null;
+        }
+      }
+  
+      const result = await user.save();
+  
+      const { password, ...data } = await result.toJSON();
+  
+      res.send(data);
     } catch (err) {
-        next(err)
+      next(err);
     }
-})
+  })  
 
 router.post('/addUser', async (req, res, next) => {
     try {

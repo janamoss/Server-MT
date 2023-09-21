@@ -8,6 +8,7 @@ const PORT = 8080;
 const test = "JOhnyy edok"
 
 const dbUrl = "mongodb+srv://Backend:1234@mentordiamond.ualfcpy.mongodb.net/mentordiamond?retryWrites=true&w=majority"
+app.use(cookieparser())
 app.use(cors({
     credentials : true,
     origin:['http://localhost:8080','http://localhost:3000']
@@ -26,7 +27,7 @@ app.use('/product',productRouter)
 app.use('/user',userRouter)
 app.use('/order',orderRouter)
 
-app.use(cookieparser())
+
 
 app.get("/api/home",(req,res) => {
     res.json({ message: "hello"});

@@ -10,7 +10,7 @@ const cartitemSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'SKUs'
     },
-        isChecked : Boolean,
+        // isChecked : Boolean,
         created_at :{type:Date, default:Date.now},
         updated_at :{type:Date, default:Date.now},
         deleted_at : Date

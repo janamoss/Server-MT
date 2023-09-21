@@ -4,7 +4,9 @@ const mongoose = require('mongoose')
 const cors = require("cors");
 const PORT = 8080;
 
-const dbUrl = "mongodb+srv://Backend:1234@mentordiamond.ualfcpy.mongodb.net/mentordiamond?retryWrites=true&w=majority"
+const test = "JOhnyy tEst"
+
+const dbUrl = "mongodb+srv://Backend:1234@mentordiamond.ualfcpy.mongodb.net/?retryWrites=true&w=majority"
 app.use(cors());
 mongoose.Promise = global.Promise
 
@@ -27,4 +29,3 @@ app.get("/api/home",(req,res) => {
 app.listen(PORT, () =>{
     console.log(`Server started on port ${PORT}`);
 });
-

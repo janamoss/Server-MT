@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 const User = require('../models/Users')
+const Address = require('../models/Address');
+
 
 router.use(express.json())
 router.use(express.urlencoded({ extended: false }))
@@ -23,9 +25,15 @@ router.post('/register', async (req, res, next) => {
         email: req.body.email,
         password: hashedPassword,
         fullname: req.body.fullname,
+        isAdmin: true,
+        created_at: 0,
+        updated_at: 0
       });
   
-      for (const field of ['phone', 'dateOfbirth', 'gender', 'profile_picture', 'relationship']) {
+      for (const field of ['phone', 'dateOfbirth', 'gender', 'profile_picture', 'relationship','Address_idAddress']) {
+        if (!req.body[field['Address_idAddress']]) {
+            user[field['Address_idAddress']] = [];
+          }
         if (!req.body[field]) {
           user[field] = null;
         }
@@ -46,6 +54,23 @@ router.post('/addUser', async (req, res, next) => {
         const data = await User.create(req.body)
         console.log(data)
         res.json(data)
+    } catch (err) {
+        next(err)
+    }
+})
+
+router.put('/add/Address/:id', async (req, res, next) => {
+    try {
+        const userId = req.params.id;
+        const addressDocument = await Address.create(req.body);
+        const addressId = addressDocument._id;
+
+        await User.updateOne({ _id: userId }, { Address_idAddress:[addressId] });
+
+        res.send('ข้อมูลที่อยู่ ที่เพิ่มเรียบร้อย');
+        // const data = await User.create(req.body)
+        // console.log(data)
+        // res.json(data)
     } catch (err) {
         next(err)
     }

@@ -7,7 +7,7 @@ const cartitemSchema = new mongoose.Schema({
     },
     SKUs: [
         {
-            SKUs_idSKUs: {
+            _id: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'SKUs'
             },
@@ -15,14 +15,7 @@ const cartitemSchema = new mongoose.Schema({
             updated_at: { type: Date, default: Date.now },
             deleted_at: Date
         }
-    ],
-}, {
-    toJSON: {
-        transform: function (doc, ret) {
-            delete ret._id;
-            delete ret.__v;
-        }
-    }
-});
+    ]
+})
 
 module.exports = mongoose.model('Cart_item', cartitemSchema);

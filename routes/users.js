@@ -24,19 +24,8 @@ router.post('/register', async (req, res, next) => {
         const user = new User({
             email: req.body.email,
             password: hashedPassword,
-            fullname: req.body.fullname,
-            isAdmin: false,
-            created_at: 0,
-            updated_at: 0
+            fullname: req.body.fullname
         });
-
-        for (const field of ['phone', 'dateOfbirth', 'gender', 'profile_picture', 'relationship', 'Address_idAddress']) {
-            if (!req.body[field['Address_idAddress']]) {
-                user[field['Address_idAddress']] = [];
-            }
-            if (!req.body[field]) {
-                user[field] = null;
-            }
 
             const result = await user.save();
 
@@ -44,7 +33,6 @@ router.post('/register', async (req, res, next) => {
 
             res.send(data);
 
-        }
     } catch (err) {
         next(err);
     }
@@ -123,16 +111,14 @@ router.get('/user', async (req, res, next) => {
             });
         }
 
-        const claims = jwt.verify(jwtCookie, 'secret');
-
-        if (!claims) {
+        if (!decodedToken) {
             console.log('JWT cookie is invalid');
             return res.status(401).send({
                 message: 'ไม่ผ่านการรับรองความถูกต้อง'
             });
         }
 
-        const user = await User.findOne({ _id: claims._id });
+        const user = await User.findOne({ _id: decodedToken._id });
 
         const { password, ...data } = user.toJSON();
         res.send(data);
@@ -145,7 +131,6 @@ router.get('/user', async (req, res, next) => {
 
 router.get('/logout', (req, res, next) => {
     res.cookie('jwt', '', { maxAge: 0 })
-
     res.send({
         message: "Logout success"
     })

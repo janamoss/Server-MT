@@ -14,12 +14,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    phone: String,
-    dateOfbirth: Date,
-    gender: String,
-    profile_picture: String,
-    relationship: String,
-    isAdmin: Boolean,
+    phone: { type: String, default: "" },
+    dateOfbirth: { type: Date, default: null },
+    gender: { type: String, default: "" },
+    profile_picture: { type: String, default: "" },
+    relationship: { type: String, default: "" },
+    isAdmin: { type: Boolean, default: false },
     Address_idAddress:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Address'

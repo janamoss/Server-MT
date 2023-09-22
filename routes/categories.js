@@ -19,15 +19,6 @@ router.get('/', async (req, res, next) => {
     }
 })
 
-router.get('/onecategories/:id', async (req, res, next) => {
-    try {
-        const id = req.params.id
-        const data = await categories.findById(id)
-        res.json(data)
-    } catch (err) {
-        next(err)
-    }
-})
 
 router.post('/addcategories', async (req, res, next) => {
     try {

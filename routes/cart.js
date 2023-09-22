@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
-const SKUs = require('../models/SKUs')
-const Pic = require('../models/Pictures')
-const { ObjectId } = require('mongodb');
+const cart = require('../models/Cart_item')
+const User = require('../models/Users')
 
+const { ObjectId } = require('mongodb');
 
 const objectId = new ObjectId();
 
@@ -13,7 +13,7 @@ router.use(express.urlencoded({ extended: false }))
 
 router.get('/', async (req, res, next) => {
     try {
-        const data = await Pic.find()
+        const data = await cart.find()
         console.log(data)
         res.json(data)
     } catch (err) {
@@ -22,12 +22,12 @@ router.get('/', async (req, res, next) => {
 })
 
 
-router.post('/addpic', async (req, res, next) => {
+router.post('/addcart', async (req, res, next) => {
     try {
-        const data = await Pic.create(req.body)
-        const sku = await SKUs.findOne({ _id: req.body.SKUs_idSKUs});
-        sku.idPictures.push(data._id);
-        await sku.save();
+        const data = await cart.create(req.body)
+        // const user = await User.findOne({ _id: req.body.Users_idUsers });
+        // user.Address_idAddress.push(data._id);
+        // await user.save();
         console.log(data)
         res.json(data)
     } catch (err) {

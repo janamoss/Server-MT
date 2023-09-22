@@ -13,7 +13,7 @@ router.use(express.urlencoded({ extended: false }))
 
 router.get('/', async (req, res, next) => {
     try {
-        const data = await Product.find()
+        const data = await SKUs.find()
         console.log(data)
         res.json(data)
     } catch (err) {

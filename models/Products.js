@@ -8,8 +8,7 @@ const productSchema = new mongoose.Schema({
     modelPath: String,
     idSKU: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'SKUs', 
-        default:[]
+        ref: 'SKUs'
     },
     created_at:{type:Date, default:Date.now},
     updated_at:{type:Date, default:Date.now},

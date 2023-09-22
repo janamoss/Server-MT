@@ -25,7 +25,7 @@ const orderRouter = require('./routes/orders')
 const addressRouter = require('./routes/address')
 const skusRouter = require('./routes/skus')
 const picRouter = require('./routes/pictures')
-const cartRouter = require('./routes/Cart_item')
+const cartRouter = require('./routes/cart')
 
 
 

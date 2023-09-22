@@ -5,10 +5,10 @@ const skusSchema = new mongoose.Schema({
     goldWight: String,
     price: Number,
     cost: Number,
-    idPictures: {
+    idPictures: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Pictures'
-    },
+    }],
     created_at:{type:Date, default:Date.now},
     updated_at:{type:Date, default:Date.now},
     deleted_at:Date

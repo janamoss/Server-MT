@@ -20,32 +20,32 @@ router.post('/register', async (req, res, next) => {
             res.status(400).json({ message: 'อีเมลนี้ถูกใช้งานแล้ว กรุณาลองใหม่อีกครั้ง' });
             return;
         }
-  
-      const user = new User({
-        email: req.body.email,
-        password: hashedPassword,
-        fullname: req.body.fullname,
-        isAdmin: true,
-        created_at: 0,
-        updated_at: 0
-      });
-  
-      for (const field of ['phone', 'dateOfbirth', 'gender', 'profile_picture', 'relationship','Address_idAddress']) {
-        if (!req.body[field['Address_idAddress']]) {
-            user[field['Address_idAddress']] = [];
-          }
-        if (!req.body[field])  {
-          user[field] = null;
+
+        const user = new User({
+            email: req.body.email,
+            password: hashedPassword,
+            fullname: req.body.fullname,
+            isAdmin: false,
+            created_at: 0,
+            updated_at: 0
+        });
+
+        for (const field of ['phone', 'dateOfbirth', 'gender', 'profile_picture', 'relationship', 'Address_idAddress']) {
+            if (!req.body[field['Address_idAddress']]) {
+                user[field['Address_idAddress']] = [];
+            }
+            if (!req.body[field]) {
+                user[field] = null;
+            }
+
+            const result = await user.save();
+
+            const { password, ...data } = await result.toJSON();
+
+            res.send(data);
+
         }
-
-        const result = await user.save();
-
-        const { password, ...data } = await result.toJSON();
-
-        res.send(data);
-      
-      }
-      } catch (err) {
+    } catch (err) {
         next(err);
     }
 })
@@ -67,7 +67,7 @@ router.put('/add/Address/:id', async (req, res, next) => {
         const addressDocument = await Address.create(req.body);
         const addressId = addressDocument._id;
 
-        await User.updateOne({ _id: userId }, { Address_idAddress:[addressId] });
+        await User.updateOne({ _id: userId }, { Address_idAddress: [addressId] });
 
         res.send('ข้อมูลที่อยู่ ที่เพิ่มเรียบร้อย');
         // const data = await User.create(req.body)
@@ -94,16 +94,17 @@ router.post('/login', async (req, res, next) => {
             })
         }
 
-        const token = jwt.sign({ _id: user._id }, "secret")
+        const token = jwt.sign({ _id: user._id, type: user.isAdmin }, "secret")
 
         res.cookie("jwt", token, {
             httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000 // 1 วัน
+            maxAge: 24 * 60 * 60 * 1000,// 1 วัน
         })
 
         res.send({
-            message: "success"
+            message:"Hello, Welcome"
         })
+
     } catch (err) {
         next(err)
     }
@@ -112,11 +113,13 @@ router.post('/login', async (req, res, next) => {
 router.get('/user', async (req, res, next) => {
     try {
         const jwtCookie = req.cookies['jwt'];
+        const decodedToken = jwt.verify(jwtCookie, "secret");
+        const types = decodedToken.type;
 
-        if (!jwtCookie) {
+        if (types === true) {
             console.log('JWT cookie is not present');
             return res.status(401).send({
-                message: 'ไม่ผ่านการรับรองความถูกต้อง'
+                message: 'คุณไม่สามารถเข้าสู่หน้านี้ได้'
             });
         }
 

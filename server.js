@@ -24,12 +24,16 @@ const productRouter = require('./routes/products')
 const orderRouter = require('./routes/orders')
 const addressRouter = require('./routes/address')
 const skusRouter = require('./routes/skus')
+const picRouter = require('./routes/pictures')
+
 
 app.use('/address',addressRouter)
 app.use('/product',productRouter)
 app.use('/sku',skusRouter)
 app.use('/user',userRouter)
 app.use('/order',orderRouter)
+app.use('/pic',picRouter)
+
 
 
 

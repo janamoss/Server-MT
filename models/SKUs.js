@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const skusSchema = new mongoose.Schema({
-    idSKUs: {
-        type: Number,
-        unique: true
-    },
     color: String,
     goldWight: String,
     price: Number,

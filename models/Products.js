@@ -13,7 +13,7 @@ const productSchema = new mongoose.Schema({
     },
     created_at:{type:Date, default:Date.now},
     updated_at:{type:Date, default:Date.now},
-    deleted_at:{type:Date, default:Date.now}
+    deleted_at: Date
 });
 
 module.exports = mongoose.model('Products', productSchema);

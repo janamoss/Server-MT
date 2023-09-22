@@ -2,7 +2,9 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 const SKUs = require('../models/SKUs')
+const product = require('../models/Products')
 const { ObjectId } = require('mongodb');
+
 
 const objectId = new ObjectId();
 
@@ -32,6 +34,9 @@ router.get('/oneSKUs/:id', async (req, res, next) => {
 router.post('/addSKUs', async (req, res, next) => {
     try {
         const data = await SKUs.create(req.body)
+        const product = await product.findOne({ _id: req.body.Products_idProducts });
+        product.idSKU.push(data._id);
+        await product.save();
         console.log(data)
         res.json(data)
     } catch (err) {

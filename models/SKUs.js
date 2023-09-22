@@ -5,9 +5,9 @@ const skusSchema = new mongoose.Schema({
     goldWight: String,
     price: Number,
     cost: Number,
-    Products_idProducts: {
+    idPictures: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Products'
+        ref: 'Pictures'
     },
     created_at:{type:Date, default:Date.now},
     updated_at:{type:Date, default:Date.now},

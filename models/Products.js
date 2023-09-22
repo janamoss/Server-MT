@@ -6,6 +6,10 @@ const productSchema = new mongoose.Schema({
     productDesc: String,
     thumbnail: String,
     modelPath: String,
+    idSKU: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'SKUs'
+    },
     created_at:{type:Date, default:Date.now},
     updated_at:{type:Date, default:Date.now},
     deleted_at:{type:Date, default:Date.now}

@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 const SKUs = require('../models/SKUs')
-const Product = require('../models/Products')
+const Pic = require('../models/Pictures')
 const { ObjectId } = require('mongodb');
 
 
@@ -21,22 +21,13 @@ router.get('/', async (req, res, next) => {
     }
 })
 
-// router.get('/oneSKUs/:id', async (req, res, next) => {
-//     try {
-//         const id = req.params.id
-//         const data = await SKUs.findById(id)
-//         res.json(data)
-//     } catch (err) {
-//         next(err)
-//     }
-// })
 
-router.post('/addSKUs', async (req, res, next) => {
+router.post('/addpic', async (req, res, next) => {
     try {
-        const data = await SKUs.create(req.body)
-        const product = await Product.findOne({ _id: req.body.Products_idProducts});
-        product.idSKU.push(data._id);
-        await product.save();
+        const data = await Pic.create(req.body)
+        const sku = await SKUs.findOne({ _id: req.body.SKUs_idSKUs});
+        sku.idPictures.push(data._id);
+        await sku.save();
         console.log(data)
         res.json(data)
     } catch (err) {

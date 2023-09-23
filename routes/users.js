@@ -10,6 +10,17 @@ const Address = require('../models/Address');
 router.use(express.json())
 router.use(express.urlencoded({ extended: false }))
 
+router.get('/',async (req,res,next)=>{
+    try {
+        const data = await User.find()
+        console.log(data)
+        res.json(data)
+
+    } catch (err) {
+        next(err)
+    }
+})
+
 router.post('/register', async (req, res, next) => {
     try {
         const salt = await bcrypt.genSalt(10);
@@ -41,7 +52,7 @@ router.post('/register', async (req, res, next) => {
 router.post('/addUser', async (req, res, next) => {
     try {
         const data = await User.create(req.body)
-        console.log(data)
+
         res.json(data)
     } catch (err) {
         next(err)
@@ -74,33 +85,30 @@ router.post('/login', async (req, res, next) => {
             return res.status(404).send({
                 message: 'อีเมลของคุณไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง'
             })
-        }
-
-        if (!await bcrypt.compare(req.body.password, user.password)) {
+        }else if (!await bcrypt.compare(req.body.password, user.password)) {
             return res.status(404).send({
                 message: 'รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง'
             })
+        } else {
+            const token = jwt.sign({ _id: user._id, type: user.isAdmin }, "secret")
+
+            res.cookie("jwt", token, {
+                httpOnly: true,
+                maxAge: 24 * 60 * 60 * 1000,
+                domain:['http://localhost:3000','http://localhost:8080'],
+            })
+            console.log('login Successfully')
+            res.send(jwt)
         }
-
-        const token = jwt.sign({ _id: user._id, type: user.isAdmin }, "secret")
-
-        res.cookie("jwt", token, {
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000,// 1 วัน
-        })
-
-        res.send({
-            message:"Hello, Welcome"
-        })
 
     } catch (err) {
         next(err)
     }
 })
 
-router.get('/user', async (req, res, next) => {
+router.get('/existUser', async (req, res, next) => {
     try {
-        const jwtCookie = req.cookies['jwt'];
+        const jwtCookie = await req.cookies['jwt'];
         const decodedToken = jwt.verify(jwtCookie, "secret");
         const types = decodedToken.type;
 
@@ -121,11 +129,14 @@ router.get('/user', async (req, res, next) => {
         const user = await User.findOne({ _id: decodedToken._id });
 
         const { password, ...data } = user.toJSON();
-        res.send(data);
 
+        // res.send(data);
+        res.json(data)
     } catch (err) {
-        console.log(err);
-        next(err);
+        console.log("User doesn't login")
+        // res.send("User doesn't login")
+        // console.log(err);
+        // next(err);
     }
 });
 

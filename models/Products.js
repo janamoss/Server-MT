@@ -4,10 +4,7 @@ const productSchema = new mongoose.Schema({
     type: String,
     productName: String,
     productDesc: String,
-    thumbnail: {
-        data: Buffer,
-        contentType: String
-    },
+    thumbnail: String,
     idSKU: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'SKUs'

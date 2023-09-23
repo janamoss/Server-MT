@@ -5,17 +5,13 @@ const cartitemSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    SKUs: [
-        {
-            _id: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'SKUs'
-            },
-            created_at: { type: Date, default: Date.now },
-            updated_at: { type: Date, default: Date.now },
-            deleted_at: Date
-        }
-    ]
+    SKUs: [{SKUs_idSKUs:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'SKUs'
+    },
+    size: String,
+    qty: Number      
+}]
 })
 
 module.exports = mongoose.model('Cart_item', cartitemSchema);

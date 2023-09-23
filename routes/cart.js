@@ -3,6 +3,7 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const cart = require('../models/Cart_item')
 const User = require('../models/Users')
+const SKUs = require('../models/SKUs')
 
 const { ObjectId } = require('mongodb');
 
@@ -34,5 +35,59 @@ router.post('/addcart', async (req, res, next) => {
         next(err)
     }
 })
+//มาแค่ id
+// router.put('/addskus/:cartId', async (req, res, next) => {
+//     const cartId = req.params.cartId;
+//     const skuId = req.body.SKUs[0]._id; // ดึง ObjectId ของ SKU ออกมาจากข้อมูลที่ส่งมา
+  
+//     try {
+//       const existingCart = await cart.findOne({ _id: cartId });
+  
+//       if (!existingCart) {
+//         return res.status(404).json({ message: 'ไม่พบ cart ที่ตรงกับ id ที่ระบุ' });
+//       }
+  
+//       // ค้นหาข้อมูล SKU จากคอลเลคชัน SKUs และ populate ข้อมูล
+//       const skuData = await SKUs.findById(skuId);
+  
+//       if (!skuData) {
+//         return res.status(404).json({ message: 'ไม่พบ SKU ที่ตรงกับ id ที่ระบุ' });
+//       }
+  
+//       // เพิ่มข้อมูล SKU ลงใน existingCart.SKUs
+//       existingCart.SKUs.push(skuData);
+  
+//       const updatedCart = await existingCart.save();
+  
+//       res.json(updatedCart);
+//     } catch (err) {
+//       next(err);
+//     }
+//   });
 
+router.put('/addskus/:cartId', async (req, res, next) => {
+    const cartId = req.params.cartId;
+    const skusData = req.body.SKUs; 
+  
+    try {
+      const existingCart = await cart.findOne({ _id: cartId });
+  
+      if (!existingCart) {
+        return res.status(404).json({ message: 'ไม่พบ cart ที่ตรงกับ id ที่ระบุ' });
+      }
+  
+      // วนลูปเพื่อเพิ่มข้อมูล SKU ลงใน existingCart.SKUs
+      skusData.forEach((skuItem) => {
+        existingCart.SKUs.push(skuItem);
+      });
+  
+      const updatedCart = await existingCart.save();
+  
+      res.json(updatedCart);
+    } catch (err) {
+      next(err);
+    }
+  });
+  
+  
 module.exports = router

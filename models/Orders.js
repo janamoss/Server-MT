@@ -1,15 +1,17 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-    Users_idUser: {
+    _id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
     total: Number,
     notes: String,
-    paymentOption: String,
-    shippingOption: String,
-    status: String
+    status: {
+        type: String,
+        default: 'to pay' 
+    }
+
 });
 
 module.exports = mongoose.model('Order', orderSchema);

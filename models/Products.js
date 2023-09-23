@@ -5,7 +5,6 @@ const productSchema = new mongoose.Schema({
     productName: String,
     productDesc: String,
     thumbnail: String,
-    modelPath: String,
     idSKU: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'SKUs'

@@ -3,6 +3,8 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const Product = require('../models/Products')
 const { ObjectId } = require('mongodb');
+const multer = require('multer')
+const upload = require('./upload')
 
 const objectId = new ObjectId();
 
@@ -12,6 +14,29 @@ router.use(express.urlencoded({ extended: false }))
 router.get('/', async (req, res, next) => {
     try {
         const data = await Product.find()
+        console.log(data)
+        res.json(data)
+    } catch (err) {
+        next(err)
+    }
+})
+
+
+router.post('/addPro', upload.single('thumbnail'), async (req, res, next) => {
+    try {
+        console.log('Request file:', req.file)
+        let dataObj = {
+            type: req.body.type,
+            productName: req.body.productName,
+            productDesc: req.body.productDesc,
+            thumbnail: {
+                data: req.file.filename,
+                contentType: 'image/jpg'
+            },
+            idSKU:[req.body.idSKU]
+        }
+
+        const data = await Product.create(dataObj)
         console.log(data)
         res.json(data)
     } catch (err) {
@@ -29,15 +54,15 @@ router.get('/onePro/:id', async (req, res, next) => {
     }
 })
 
-router.post('/addPro', async (req, res, next) => {
-    try {
-        const data = await Product.create(req.body)
-        console.log(data)
-        res.json(data)
-    } catch (err) {
-        next(err)
-    }
-})
+// router.post('/addPro', async (req, res, next) => {
+//     try {
+//         const data = await Product.create(req.body)
+//         console.log(data)
+//         res.json(data)
+//     } catch (err) {
+//         next(err)
+//     }
+// })
 
 router.put('/editPro/:id', async (req, res, next) => {
     try {
@@ -45,7 +70,6 @@ router.put('/editPro/:id', async (req, res, next) => {
         const { idProducts, type, productName, productDesc,thumbnail,modelPath} = req.body
         const data = await Product.findById(id).updateOne({
             $set: {
-                idProducts: idProducts,
                 type: type,
                 productName: productName,
                 productDesc: productDesc,

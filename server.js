@@ -27,6 +27,7 @@ const skusRouter = require('./routes/skus')
 const picRouter = require('./routes/pictures')
 const cartRouter = require('./routes/cart')
 const orderdeRouter = require('./routes/orderdetail')
+const categoriesRouter = require('./routes/categories')
 
 
 
@@ -39,6 +40,8 @@ app.use('/order',orderRouter)
 app.use('/pic',picRouter)
 app.use('/cart',cartRouter)
 app.use('/orderdetail',orderdeRouter)
+app.use('/categories',categoriesRouter)
+
 
 
 

@@ -11,7 +11,8 @@ const cartitemSchema = new mongoose.Schema({
     },
     size: String,
     qty: Number      
-}]
+}],
+    ischeck: Boolean 
 })
 
 module.exports = mongoose.model('Cart_item', cartitemSchema);

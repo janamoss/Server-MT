@@ -89,5 +89,36 @@ router.put('/addskus/:cartId', async (req, res, next) => {
     }
   });
   
+  router.delete('/delete/sku/:cartId/:skuId', async (req, res, next) => {
+    const cartId = req.params.cartId;
+    const skuId = req.params.skuId;
+    // const skuId = mongoose.Types.ObjectId(req.params.skuId);
+  
+    try {
+      const existingCart = await cart.findOne({ _id: cartId });
+  
+      if (!existingCart) {
+        return res.status(404).json({ message: 'ไม่พบ cart ที่ตรงกับ id ที่ระบุ' });
+      }
+  
+      // ค้นหา Index ของ sku ที่ต้องการลบใน existingCart.SKUs
+      // const skuIndex = existingCart.SKUs.findIndex((skus) => skus._id === skuId);
+      const skuIndex = existingCart.SKUs.findIndex((sku) => sku._id.equals(skuId));
+
+      if (skuIndex === -1) {
+        return res.status(404).json({ message: 'ไม่พบ SKU ที่ตรงกับ id ที่ระบุใน cart นี้' });
+      }
+  
+      // ลบ sku ออกจาก existingCart.SKUs โดยใช้ splice
+      existingCart.SKUs.splice(skuIndex, 1);
+  
+      const updatedCart = await existingCart.save();
+  
+      res.json(updatedCart);
+    } catch (err) {
+      next(err);
+    }
+  });
+  
   
 module.exports = router

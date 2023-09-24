@@ -66,7 +66,7 @@ router.post('/addPro', async (req, res, next) => {
 router.put('/editPro/:id', async (req, res, next) => {
     try {
         const id = req.params.id
-        const { idProducts, type, productName, productDesc,thumbnail,modelPath} = req.body
+        const { type, productName, productDesc, base64 } = req.body;
         const data = await Product.findById(id).updateOne({
             $set: {
                 type: type,
@@ -76,7 +76,6 @@ router.put('/editPro/:id', async (req, res, next) => {
                 modelPath:modelPath
             }
         })
-
         // console.log("objectID:=>"+objectId(id))
         res.json(data)
     } catch (err) {

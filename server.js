@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cors = require("cors");
 const cookieparser = require("cookie-parser");
 const path = require("path")
-const meta = require("meta")
+const bodyParser = require('body-parser');
 const PORT = 8080;
 
 const test = "JOhnyy edok"
@@ -17,12 +17,14 @@ const dirnames = path.dirname(filenames);
 
 const dbUrl = "mongodb+srv://Backend:1234@mentordiamond.ualfcpy.mongodb.net/mentordiamond?retryWrites=true&w=majority"
 app.use(cookieparser())
-const corsOptions = {
-  origin: ['http://localhost:3000','http://localhost:8080'], // Replace with your client-side URL
-  credentials: true, // Enable credentials (cookies)
-};
+app.use(cors({
+    credentials : true,
+    origin:['http://localhost:8080','http://localhost:3000']
+}));
 
-app.use(cors(corsOptions));
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+
 mongoose.Promise = global.Promise
 
 mongoose.connect(dbUrl,{ useNewUrlParser: true, useUnifiedTopology: true })
@@ -41,6 +43,7 @@ const orderdeRouter = require('./routes/orderdetail')
 
 
 
+
 app.use('/address',addressRouter)
 app.use('/product',productRouter)
 app.use('/sku',skusRouter)
@@ -51,7 +54,7 @@ app.use('/cart',cartRouter)
 app.use('/orderdetail',orderdeRouter)
 
 app.use("/api/files", express.static(path.join(dirnames, "/upload")));
-
+app.use(express.json({ limit: '10mb' }));
 
 
 app.get("/api/home",(req,res) => {

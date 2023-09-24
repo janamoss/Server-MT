@@ -30,13 +30,13 @@ router.get('/onePro/:id', async (req, res, next) => {
 })
 
 router.post('/addPro', async (req, res, next) => {
-    const {base64} = req.body.thumbnail;
+    const { type, productName, productDesc, base64 } = req.body; // Destructure directly from req.body
     try {
         let datas = {
-            type: req.body.type,
-            productName: req.body.productName,
-            productDesc: req.body.productDesc,
-            thumbnail: Product.create({thumbnail:base64}),
+            type,
+            productName,
+            productDesc,
+            thumbnail: base64,
         }
         const data = await Product.create(datas)
         console.log(data)
@@ -49,18 +49,15 @@ router.post('/addPro', async (req, res, next) => {
 router.put('/editPro/:id', async (req, res, next) => {
     try {
         const id = req.params.id
-        const { idProducts, type, productName, productDesc,thumbnail,modelPath} = req.body
+        const { type, productName, productDesc, base64 } = req.body;
         const data = await Product.findById(id).updateOne({
             $set: {
-                idProducts: idProducts,
-                type: type,
-                productName: productName,
-                productDesc: productDesc,
-                thumbnail:thumbnail,
-                modelPath:modelPath
+                type,
+                productName,
+                productDesc,
+                thumbnail:base64,
             }
         })
-
         // console.log("objectID:=>"+objectId(id))
         res.json(data)
     } catch (err) {

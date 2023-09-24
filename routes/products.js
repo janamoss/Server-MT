@@ -30,8 +30,15 @@ router.get('/onePro/:id', async (req, res, next) => {
 })
 
 router.post('/addPro', async (req, res, next) => {
+    const {base64} = req.body.thumbnail;
     try {
-        const data = await Product.create(req.body)
+        let datas = {
+            type: req.body.type,
+            productName: req.body.productName,
+            productDesc: req.body.productDesc,
+            thumbnail: Product.create({thumbnail:base64}),
+        }
+        const data = await Product.create(datas)
         console.log(data)
         res.json(data)
     } catch (err) {

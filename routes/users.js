@@ -222,9 +222,6 @@ router.put('/add/Address/:id', async (req, res, next) => {
         await User.updateOne({ _id: userId }, { Address_idAddress: [addressId] });
 
         res.send('ข้อมูลที่อยู่ ที่เพิ่มเรียบร้อย');
-        // const data = await User.create(req.body)
-        // console.log(data)
-        // res.json(data)
     } catch (err) {
         next(err)
     }

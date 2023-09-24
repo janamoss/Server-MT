@@ -3,9 +3,17 @@ const app = express();
 const mongoose = require('mongoose');
 const cors = require("cors");
 const cookieparser = require("cookie-parser");
+const path = require("path")
+const meta = require("meta")
 const PORT = 8080;
 
 const test = "JOhnyy edok"
+
+// const __dirname = path.resolve();
+const { fileURLToPath } = require('url');
+const filenames = fileURLToPath("file:///C:/path/");
+
+const dirnames = path.dirname(filenames);
 
 const dbUrl = "mongodb+srv://Backend:1234@mentordiamond.ualfcpy.mongodb.net/mentordiamond?retryWrites=true&w=majority"
 app.use(cookieparser())
@@ -42,7 +50,7 @@ app.use('/pic',picRouter)
 app.use('/cart',cartRouter)
 app.use('/orderdetail',orderdeRouter)
 
-
+app.use("/api/files", express.static(path.join(dirnames, "/upload")));
 
 
 

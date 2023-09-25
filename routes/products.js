@@ -3,6 +3,7 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const Product = require('../models/Products')
 const { ObjectId } = require('mongodb');
+const SKUs = require('../models/SKUs');
 
 const objectId = new ObjectId();
 
@@ -19,11 +20,10 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-
 router.get('/onePro/:id', async (req, res, next) => {
     try {
         const id = req.params.id
-        const data = await Product.findById(id)
+        const data = await SKUs.find({Products_idProducts:id})
         res.json(data)
     } catch (err) {
         next(err)

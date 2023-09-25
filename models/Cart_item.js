@@ -7,6 +7,8 @@ const cartitemSchema = new mongoose.Schema({
     },
     SKUs: [
         {
+            size: String,
+            qty: { type: Number, default: 1 },
             _id: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'SKUs'

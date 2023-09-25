@@ -32,7 +32,6 @@ router.get('/onePro/:id', async (req, res, next) => {
 router.post('/addPro', async (req, res, next) => {
     try {
         const data = await Product.create(req.body)
-        console.log(data)
         res.json(data)
     } catch (err) {
         next(err)

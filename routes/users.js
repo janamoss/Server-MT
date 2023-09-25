@@ -27,11 +27,11 @@ router.post('/register', async (req, res, next) => {
             fullname: req.body.fullname
         });
 
-            const result = await user.save();
+        const result = await user.save();
 
-            const { password, ...data } = await result.toJSON();
+        const { password, ...data } = await result.toJSON();
 
-            res.send(data);
+        res.send(data);
 
     } catch (err) {
         next(err);
@@ -87,7 +87,7 @@ router.post('/login', async (req, res, next) => {
         })
 
         res.send({
-            message:"Hello, Welcome"
+            message: "Hello, Welcome"
         })
 
     } catch (err) {

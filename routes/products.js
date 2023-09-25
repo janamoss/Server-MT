@@ -13,13 +13,14 @@ router.use(express.urlencoded({ extended: false }))
 
 router.get('/', async (req, res, next) => {
     try {
-        const data = await Product.find()
-        console.log(data)
-        res.json(data)
+        const data = await Product.find().sort({ created_at: -1 });
+        console.log(data);
+        res.json(data);
     } catch (err) {
-        next(err)
+        next(err);
     }
-})
+});
+
 
 
 router.post('/addPro', upload.single('thumbnail'), async (req, res, next) => {

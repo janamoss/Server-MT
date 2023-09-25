@@ -12,6 +12,35 @@ router.use(express.urlencoded({ extended: false }))
 
 router.get('/',async (req,res,next)=>{
     try {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+        const existingUser = await User.findOne({ email: req.body.email });
+        if (existingUser) {
+            res.status(400).json({ message: 'อีเมลนี้ถูกใช้งานแล้ว กรุณาลองใหม่อีกครั้ง' });
+            return;
+        }
+
+        const user = new User({
+            email: req.body.email,
+            password: hashedPassword,
+            fullname: req.body.fullname
+        });
+
+        const result = await user.save();
+
+        const { password, ...data } = await result.toJSON();
+
+        res.send(data);
+
+    } catch (err) {
+        next(err);
+    }
+})
+
+router.post('/addUser', async (req, res, next) => {
+    try {
+        const data = await User.create(req.body)
         const data = await User.find()
         console.log(data)
         res.json(data)

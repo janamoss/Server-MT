@@ -3,6 +3,7 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const Product = require('../models/Products')
 const { ObjectId } = require('mongodb');
+const SKUs = require('../models/SKUs');
 const multer = require('multer')
 const upload = require('./upload')
 
@@ -21,34 +22,10 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-
-
-router.post('/addPro', upload.single('thumbnail'), async (req, res, next) => {
-    try {
-        console.log('Request file:', req.file)
-        let dataObj = {
-            type: req.body.type,
-            productName: req.body.productName,
-            productDesc: req.body.productDesc,
-            thumbnail: {
-                data: req.file.filename,
-                contentType: 'image/jpg'
-            },
-            idSKU:[req.body.idSKU]
-        }
-
-        const data = await Product.create(dataObj)
-        console.log(data)
-        res.json(data)
-    } catch (err) {
-        next(err)
-    }
-})
-
 router.get('/onePro/:id', async (req, res, next) => {
     try {
         const id = req.params.id
-        const data = await Product.findById(id)
+        const data = await SKUs.find({Products_idProducts:id})
         res.json(data)
     } catch (err) {
         next(err)

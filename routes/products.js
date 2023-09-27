@@ -23,6 +23,16 @@ router.get('/', async (req, res, next) => {
 router.get('/onePro/:id', async (req, res, next) => {
     try {
         const id = req.params.id
+        const data = await Product.find(id)
+        res.json(data)
+    } catch (err) {
+        next(err)
+    }
+})
+
+router.get('/oneSKUs/:id', async (req, res, next) => {
+    try {
+        const id = req.params.id
         const data = await SKUs.find({Products_idProducts:id})
         res.json(data)
     } catch (err) {

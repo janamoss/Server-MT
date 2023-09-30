@@ -30,6 +30,29 @@ router.get('/onePro/:id', async (req, res, next) => {
     }
 })
 
+
+router.post('/addPro', upload.single('thumbnail'), async (req, res, next) => {
+    try {
+        console.log('Request file:', req.file)
+        let dataObj = {
+            type: req.body.type,
+            productName: req.body.productName,
+            productDesc: req.body.productDesc,
+            thumbnail: {
+                data: req.file.filename,
+                contentType: 'image/jpg'
+            },
+            idSKU:[req.body.idSKU]
+        }
+
+        const data = await Product.create(dataObj)
+        console.log(data)
+        res.json(data)
+    } catch (err) {
+        next(err)
+    }
+})
+
 router.get('/oneSKUs/:id', async (req, res, next) => {
     try {
         const id = req.params.id

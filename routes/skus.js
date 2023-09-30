@@ -31,6 +31,16 @@ router.get('/productSKUs/:id', async (req, res, next) => {
     }
 })
 
+router.get('/oneSKUs/:id', async (req, res, next) => {
+    try {
+        const id = req.params.id
+        const data = await SKUs.findById(id)
+        res.json(data)
+    } catch (err) {
+        next(err)
+    }
+})
+
 router.post('/addSKUs', async (req, res, next) => {
     try {
         const { Products_idProducts, color, goldWight, price, cost, base64 } = req.body;
@@ -67,7 +77,7 @@ router.put('/editSkus/:id', async (req, res, next) => {
                 goldWight,
                 price,
                 cost,
-                thumbnail:base64,
+                idPictures:base64,
                 updated_at: currentTime,
             }
         })

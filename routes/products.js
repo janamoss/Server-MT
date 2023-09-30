@@ -30,6 +30,7 @@ router.get('/onePro/:id', async (req, res, next) => {
     }
 })
 
+
 router.get('/oneSKUs/:id', async (req, res, next) => {
     try {
         const id = req.params.id

@@ -5,8 +5,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: true
-      },
-    password:{
+    },
+    password: {
         type: String,
         required: true
     },
@@ -20,12 +20,12 @@ const userSchema = new mongoose.Schema({
     profile_picture: { type: String, default: "" },
     relationship: { type: String, default: "" },
     isAdmin: { type: Boolean, default: false },
-    Address_idAddress:[{
+    Address_idAddress: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Address'
     }],
-    created_at:{type:Date, default:Date.now},
-    updated_at:{type:Date, default:Date.now},
+    created_at: { type: Date, default: Date.now },
+    updated_at: { type: Date, default: Date.now },
     deleted_at: Date
 });
 

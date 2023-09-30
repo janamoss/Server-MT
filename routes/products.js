@@ -25,7 +25,7 @@ router.get('/', async (req, res, next) => {
 router.get('/onePro/:id', async (req, res, next) => {
     try {
         const id = req.params.id
-        const data = await Product.find(id)
+        const data = await Product.findById(id)
         res.json(data)
     } catch (err) {
         next(err)
@@ -55,13 +55,14 @@ router.put('/editPro/:id', async (req, res, next) => {
     try {
         const id = req.params.id
         const { type, productName, productDesc, base64 } = req.body;
+        const currentTime = new Date();
         const data = await Product.findById(id).updateOne({
             $set: {
-                type: type,
-                productName: productName,
-                productDesc: productDesc,
-                thumbnail:thumbnail,
-                modelPath:modelPath
+                type,
+                productName,
+                productDesc,
+                thumbnail:base64,
+                updated_at: currentTime,
             }
         })
         // console.log("objectID:=>"+objectId(id))

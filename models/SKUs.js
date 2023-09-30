@@ -10,12 +10,11 @@ const skusSchema = new mongoose.Schema({
     price: Number,
     cost: Number,
     idPictures: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Pictures'
+        path:String
     }],
     created_at:{type:Date, default:Date.now},
     updated_at:{type:Date, default:Date.now},
-    deleted_at:Date
+    deleted_at:{type:Date, default:""}
 });
 
 module.exports = mongoose.model('SKUs', skusSchema);

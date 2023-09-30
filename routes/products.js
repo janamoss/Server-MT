@@ -72,14 +72,29 @@ router.put('/editPro/:id', async (req, res, next) => {
     }
 })
 
-router.delete('/deletePro/:id', async (req,res,next)=>{
+router.delete('/deletePro/:id', async (req, res, next) => {
     try {
-        const id = req.params.id
-        const data = await Product.findById(id).deleteOne()
-        res.json(data)
+      const productId = req.params.id;
+  
+      // ขั้นตอนที่ 1: ค้นหาสินค้าและเติมข้อมูล SKU ที่เกี่ยวข้อง
+      const product = await Product.findById(productId).populate('idSKU');
+  
+      if (!product) {
+        return res.status(404).json({ message: 'ไม่พบสินค้า' });
+      }
+  
+      // ขั้นตอนที่ 2: ลบ SKU ที่เกี่ยวข้อง
+      for (const sku of product.idSKU) {
+        await SKUs.findByIdAndDelete(sku);
+      }
+  
+      // ขั้นตอนที่ 3: ลบสินค้าเอง
+      await Product.findByIdAndDelete(productId);
+  
+      res.json({ message: 'ลบสินค้าและ SKU ที่เกี่ยวข้องสำเร็จ' });
     } catch (err) {
-        next(err)
+      next(err);
     }
-})
+  });
 
 module.exports = router

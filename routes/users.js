@@ -28,9 +28,12 @@ router.get('/',async (req,res,next)=>{
         });
 
         const result = await user.save();
+        const result = await user.save();
 
         const { password, ...data } = await result.toJSON();
+        const { password, ...data } = await result.toJSON();
 
+        res.send(data);
         res.send(data);
 
     } catch (err) {
@@ -251,6 +254,38 @@ router.put('/add/Address/:id', async (req, res, next) => {
         await User.updateOne({ _id: userId }, { Address_idAddress: [addressId] });
 
         res.send('ข้อมูลที่อยู่ ที่เพิ่มเรียบร้อย');
+    } catch (err) {
+        next(err)
+    }
+})
+
+router.post('/login', async (req, res, next) => {
+    try {
+        const user = await User.findOne({ email: req.body.email })
+
+        if (!user) {
+            return res.status(404).send({
+                message: 'อีเมลของคุณไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง'
+            })
+        }
+
+        if (!await bcrypt.compare(req.body.password, user.password)) {
+            return res.status(404).send({
+                message: 'รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง'
+            })
+        }
+
+        const token = jwt.sign({ _id: user._id, type: user.isAdmin }, "secret")
+
+        res.cookie("jwt", token, {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,// 1 วัน
+        })
+
+        res.send({
+            message: "Hello, Welcome"
+        })
+
     } catch (err) {
         next(err)
     }

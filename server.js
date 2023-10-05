@@ -43,7 +43,6 @@ const orderdeRouter = require('./routes/orderdetail')
 
 
 
-
 app.use('/address',addressRouter)
 app.use('/product',productRouter)
 app.use('/sku',skusRouter)

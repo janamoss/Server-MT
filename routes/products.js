@@ -12,8 +12,11 @@ router.use(express.urlencoded({ extended: false }))
 
 router.get('/', async (req, res, next) => {
     try {
+        const data = await Product.find({ deleted_at: null }).populate('idSKU').sort({ created_at: -1 });
+        console.log(data);
+        res.json(data);
       // Query the database to find products that are not soft-deleted (deleted_at is null or empty)
-      const data = await Product.find({ deleted_at: null }).sort({ created_at: -1 });
+      
       console.log(data);
       res.json(data);
     } catch (err) {
@@ -25,7 +28,7 @@ router.get('/', async (req, res, next) => {
 router.get('/onePro/:id', async (req, res, next) => {
     try {
         const id = req.params.id
-        const data = await Product.findById(id)
+        const data = await Product.findById(id).populate("idSKU").sort({ created_at: -1 })
         res.json(data)
     } catch (err) {
         next(err)
@@ -36,7 +39,7 @@ router.get('/onePro/:id', async (req, res, next) => {
 router.get('/oneSKUs/:id', async (req, res, next) => {
     try {
         const id = req.params.id
-        const data = await SKUs.find({Products_idProducts:id})
+        const data = await SKUs.find({ Products_idProducts: id })
         res.json(data)
     } catch (err) {
         next(err)
@@ -70,7 +73,7 @@ router.put('/editPro/:id', async (req, res, next) => {
                 type,
                 productName,
                 productDesc,
-                thumbnail:base64,
+                thumbnail: base64,
                 updated_at: currentTime,
             }
         })
@@ -83,23 +86,27 @@ router.put('/editPro/:id', async (req, res, next) => {
 
 router.delete('/deletePro/:id', async (req, res, next) => {
     try {
-        const productId = req.params.id;
-    
-        // Find the product by ID and update the deleted_at field with a timestamp
-        const product = await Product.findByIdAndUpdate(
-          productId,
-          { deleted_at: new Date() },
-          { new: true }
-        );
-    
-        if (!product) {
-          return res.status(404).json({ message: 'Product not found' });
-        }
-    
-        res.json({ message: 'Product has been soft deleted' });
-      } catch (err) {
-        next(err);
+      const productId = req.params.id;
+  
+      // ขั้นตอนที่ 1: ค้นหาสินค้าและเติมข้อมูล SKU ที่เกี่ยวข้อง
+      const product = await Product.findById(productId).populate('idSKU');
+  
+      if (!product) {
+        return res.status(404).json({ message: 'ไม่พบสินค้า' });
       }
+  
+      // ขั้นตอนที่ 2: ลบ SKU ที่เกี่ยวข้อง
+      for (const sku of product.idSKU) {
+        await SKUs.findByIdAndDelete(sku);
+      }
+  
+      // ขั้นตอนที่ 3: ลบสินค้าเอง
+      await Product.findByIdAndDelete(productId);
+  
+      res.json({ message: 'ลบสินค้าและ SKU ที่เกี่ยวข้องสำเร็จ' });
+    } catch (err) {
+      next(err);
+    }
   });
 
 module.exports = router

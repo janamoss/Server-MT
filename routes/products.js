@@ -12,13 +12,18 @@ router.use(express.urlencoded({ extended: false }))
 
 router.get('/', async (req, res, next) => {
     try {
-        const data = await Product.find().populate('idSKU').sort({ created_at: -1 });
+        const data = await Product.find({ deleted_at: null }).populate('idSKU').sort({ created_at: -1 });
         console.log(data);
         res.json(data);
+      // Query the database to find products that are not soft-deleted (deleted_at is null or empty)
+      
+      console.log(data);
+      res.json(data);
     } catch (err) {
-        next(err);
+      next(err);
     }
-});
+  });
+  
 
 router.get('/onePro/:id', async (req, res, next) => {
     try {
@@ -81,27 +86,27 @@ router.put('/editPro/:id', async (req, res, next) => {
 
 router.delete('/deletePro/:id', async (req, res, next) => {
     try {
-        const productId = req.params.id;
-
-        // ขั้นตอนที่ 1: ค้นหาสินค้าและเติมข้อมูล SKU ที่เกี่ยวข้อง
-        const product = await Product.findById(productId).populate('idSKU');
-
-        if (!product) {
-            return res.status(404).json({ message: 'ไม่พบสินค้า' });
-        }
-
-        // ขั้นตอนที่ 2: ลบ SKU ที่เกี่ยวข้อง
-        for (const sku of product.idSKU) {
-            await SKUs.findByIdAndDelete(sku);
-        }
-
-        // ขั้นตอนที่ 3: ลบสินค้าเอง
-        await Product.findByIdAndDelete(productId);
-
-        res.json({ message: 'ลบสินค้าและ SKU ที่เกี่ยวข้องสำเร็จ' });
+      const productId = req.params.id;
+  
+      // ขั้นตอนที่ 1: ค้นหาสินค้าและเติมข้อมูล SKU ที่เกี่ยวข้อง
+      const product = await Product.findById(productId).populate('idSKU');
+  
+      if (!product) {
+        return res.status(404).json({ message: 'ไม่พบสินค้า' });
+      }
+  
+      // ขั้นตอนที่ 2: ลบ SKU ที่เกี่ยวข้อง
+      for (const sku of product.idSKU) {
+        await SKUs.findByIdAndDelete(sku);
+      }
+  
+      // ขั้นตอนที่ 3: ลบสินค้าเอง
+      await Product.findByIdAndDelete(productId);
+  
+      res.json({ message: 'ลบสินค้าและ SKU ที่เกี่ยวข้องสำเร็จ' });
     } catch (err) {
-        next(err);
+      next(err);
     }
-});
+  });
 
 module.exports = router

@@ -5,7 +5,6 @@ const SKUs = require('../models/SKUs')
 const Product = require('../models/Products')
 const { ObjectId } = require('mongodb');
 
-
 const objectId = new ObjectId();
 
 router.use(express.json())
@@ -24,7 +23,10 @@ router.get('/', async (req, res, next) => {
 router.get('/productSKUs/:id', async (req, res, next) => {
     try {
         const id = req.params.id
-        const data = await SKUs.find({ Products_idProducts: id})
+        const data = await SKUs.find({
+            Products_idProducts: id,
+            deleted_at: { $eq: null }, // Exclude deleted SKUs
+          });
         res.json(data)
     } catch (err) {
         next(err)
@@ -87,5 +89,27 @@ router.put('/editSkus/:id', async (req, res, next) => {
         next(err)
     }
 })
+
+router.delete('/deleteSKUs/:id', async (req, res, next) => {
+    try {
+        const SKUsID = req.params.id;
+    
+        // Find the product by ID and update the deleted_at field with a timestamp
+        const SKUss = await SKUs.findByIdAndUpdate(
+            SKUsID,
+          { deleted_at: new Date() },
+          { new: true }
+        );
+    
+        if (!SKUss) {
+          return res.status(404).json({ message: 'Product not found' });
+        }
+    
+        res.json({ message: 'Product has been soft deleted' });
+      } catch (err) {
+        next(err);
+      }
+  });
+
 
 module.exports = router

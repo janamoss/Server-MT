@@ -21,6 +21,40 @@ router.get('/',async (req,res,next)=>{
     }
 })
 
+router.get('/detail/:fullname', async (req,res,next)=>{
+    try {
+        const name = req.params.fullname
+        const data = await User.findOne({fullname:name})
+        console.log(data)
+        res.json(data)
+    } catch (err) {
+        next(err)
+    }
+})
+
+router.put('/EditUser/:id', async (req,res,next)=>{
+    try {
+        const id = req.params.id
+        const { fullname, phone, dateOfbirth, gender, relationship, base64 } = req.body;
+        const currentTime = new Date();
+        const data = await User.findById(id).updateOne({
+            $set: {
+                fullname, 
+                phone, 
+                dateOfbirth,
+                gender,
+                profile_picture:base64,
+                relationship,
+                updated_at: currentTime,
+            }
+        })
+        console.log(data)
+        res.json(data)
+    } catch (err) {
+        next(err)
+    }
+})
+
 router.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
@@ -223,13 +257,32 @@ router.put('/add/Address/:id', async (req, res, next) => {
         const userId = req.params.id;
         const addressDocument = await Address.create(req.body);
         const addressId = addressDocument._id;
-
         await User.updateOne({ _id: userId }, { Address_idAddress: [addressId] });
+        console.log(addressDocument)
+        res.json(addressDocument)
+    } catch (err) {
+        next(err)
+    }
+})
 
-        res.send('ข้อมูลที่อยู่ ที่เพิ่มเรียบร้อย');
-        // const data = await User.create(req.body)
-        // console.log(data)
-        // res.json(data)
+router.put('/editSkus/:id', async (req, res, next) => {
+    try {
+        const id = req.params.id
+        const { Products_idProducts, color, goldWight, price, cost, base64 } = req.body;
+        const currentTime = new Date();
+        const data = await SKUs.findById(id).updateOne({
+            $set: {
+                Products_idProducts,
+                color,
+                goldWight,
+                price,
+                cost,
+                idPictures:base64,
+                updated_at: currentTime,
+            }
+        })
+        // console.log("objectID:=>"+objectId(id))
+        res.json(data)
     } catch (err) {
         next(err)
     }

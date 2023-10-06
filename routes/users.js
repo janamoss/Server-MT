@@ -118,9 +118,10 @@ router.get('/userExist', async (req, res) => {
 
         const user = await User.findOne({_id: claims._id})
 
-        const {password, ...data} = await user.toJSON()
+        const {password, ...data} = user.toJSON()
 
         res.send(data)
+        console.log(data)
     } catch (e) {
         // console.error(e)
         

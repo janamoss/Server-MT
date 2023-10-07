@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const cartitemSchema = new mongoose.Schema({
     Users_idUsers: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        require:true
     },
     SKUs: [
         {

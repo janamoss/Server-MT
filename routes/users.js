@@ -12,12 +12,12 @@ router.use(express.urlencoded({ extended: false }))
 
 router.get('/',async (req,res,next)=>{
     try {
-        const data = await User.find()
-        console.log(data)
-        res.json(data)
-
+        const data = await User.find({ deleted_at: null }).sort({ created_at: -1 });
+      // Query the database to find products that are not soft-deleted (deleted_at is null or empty)
+      console.log(data);
+      res.json(data);
     } catch (err) {
-        next(err)
+      next(err);
     }
 })
 
@@ -25,6 +25,17 @@ router.get('/detail/:fullname', async (req,res,next)=>{
     try {
         const name = req.params.fullname
         const data = await User.findOne({fullname:name})
+        console.log(data)
+        res.json(data)
+    } catch (err) {
+        next(err)
+    }
+})
+
+router.get('/oneUser/:id', async (req,res,next)=>{
+    try {
+        const id = req.params.id
+        const data = await User.findById(id)
         console.log(data)
         res.json(data)
     } catch (err) {
@@ -45,6 +56,30 @@ router.put('/EditUser/:id', async (req,res,next)=>{
                 gender,
                 profile_picture:base64,
                 relationship,
+                updated_at: currentTime,
+            }
+        })
+        console.log(data)
+        res.json(data)
+    } catch (err) {
+        next(err)
+    }
+})
+
+router.put('/admin/EditUser/:id', async (req,res,next)=>{
+    try {
+        const id = req.params.id
+        const { fullname, phone, dateOfbirth, gender, relationship,isAdmin, base64 } = req.body;
+        const currentTime = new Date();
+        const data = await User.findById(id).updateOne({
+            $set: {
+                fullname, 
+                phone, 
+                dateOfbirth,
+                gender,
+                profile_picture:base64,
+                relationship,
+                isAdmin,
                 updated_at: currentTime,
             }
         })
@@ -121,7 +156,7 @@ router.get('/userExist', async (req, res) => {
         const {password, ...data} = user.toJSON()
 
         res.send(data)
-        console.log(data)
+        // console.log(data)
     } catch (e) {
         // console.error(e)
         
@@ -287,5 +322,26 @@ router.put('/editSkus/:id', async (req, res, next) => {
         next(err)
     }
 })
+
+router.delete('/deleteUser/:id', async (req, res, next) => {
+    try {
+        const userID = req.params.id;
+    
+        // Find the product by ID and update the deleted_at field with a timestamp
+        const users = await User.findByIdAndUpdate(
+            userID,
+          { deleted_at: new Date() },
+          { new: true }
+        );
+    
+        if (!users) {
+          return res.status(404).json({ message: 'users not found' });
+        }
+    
+        res.json({ message: 'users has been soft deleted' });
+      } catch (err) {
+        next(err);
+      }
+  });
 
 module.exports = router

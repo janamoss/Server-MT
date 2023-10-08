@@ -44,6 +44,43 @@ router.get('/usercart', async (req, res, next) => {
     }
 })
 
+router.get('/usercartsku/:userId', async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+
+        // Find the user's cart
+        const userCart = await cart.findOne({ Users_idUsers: userId })
+            .populate({
+                path: 'SKUs',
+                populate: {
+                    path: 'SKUs_idSKUs',
+                    model: 'SKUs',
+                }
+            })
+
+        if (!userCart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+
+        // Extract and format the cart data with sizes
+        const cartData = userCart.SKUs.map((cartItem) => {
+            const sku = cartItem.SKUs_idSKUs;
+            const product = sku.Products_idProducts;
+
+            return {
+                _id: cartItem._id,
+                size: cartItem.size, // Get the Size from SKU
+                sku_id: cartItem.SKUs_idSKUs,
+                // Add other required fields here
+            };
+        });
+
+        res.json(cartData);
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.get('/usercart/:userId', async (req, res, next) => {
     try {
         const userId = req.params.userId;

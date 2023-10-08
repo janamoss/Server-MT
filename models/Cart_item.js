@@ -8,10 +8,12 @@ const cartitemSchema = new mongoose.Schema({
     },
     SKUs: [
         {
-            _id: {
+            SKUs_idSKUs: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'SKUs'
             },
+            size: String,
+            qty: Number,
             created_at: { type: Date, default: Date.now },
             updated_at: { type: Date, default: Date.now },
             deleted_at: Date

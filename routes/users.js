@@ -72,9 +72,11 @@ router.post('/register', async (req, res) => {
 
     const result = await user.save()
 
-    const {password, ...data} = await result.toJSON()
+    const {password, ...data} = result.toJSON()
 
     res.send(data)
+    // res.json(data)
+    console.log(data)
 })
 
 router.post('/login', async (req, res) => {
@@ -121,7 +123,7 @@ router.get('/userExist', async (req, res) => {
         const {password, ...data} = user.toJSON()
 
         res.send(data)
-        console.log(data)
+        // console.log(data)
     } catch (e) {
         // console.error(e)
         

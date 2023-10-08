@@ -5,10 +5,6 @@ const cart = require('../models/Cart_item')
 const User = require('../models/Users')
 const SKUs = require('../models/SKUs')
 
-const { ObjectId } = require('mongodb');
-
-const objectId = new ObjectId();
-
 router.use(express.json())
 router.use(express.urlencoded({ extended: false }))
 
@@ -22,6 +18,102 @@ router.get('/', async (req, res, next) => {
     }
 })
 
+router.get('/usercart', async (req, res, next) => {
+    try {
+        const { Users_idUsers } = req.query
+        // const data = await cart.findOne({ Users_idUsers })
+        const data = await cart.findOne({ Users_idUsers })
+            .populate({
+                path: 'SKUs',
+                populate: {
+                    path: 'SKUs_idSKUs',
+                    model: 'SKUs',
+                }
+            })
+            .populate({
+                path: 'SKUs.SKUs_idSKUs',
+                populate: {
+                    path: 'Products_idProducts',
+                    model: 'Products'
+                }
+            });
+
+        res.json(data)
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.get('/usercart/:userId', async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+
+        // Assuming you have a 'User' model and want to find cart data by user ID
+        const data = await cart.findOne({ Users_idUsers: userId })
+            .populate({
+                path: 'SKUs',
+                populate: {
+                    path: 'SKUs_idSKUs',
+                    model: 'SKUs',
+                }
+            })
+            .populate({
+                path: 'SKUs.SKUs_idSKUs',
+                populate: {
+                    path: 'Products_idProducts',
+                    model: 'Products'
+                }
+            });
+
+        res.json(data);
+    } catch (error) {
+        next(error);
+    }
+});
+// router.get('/', async (req, res, next) => {
+//     try {
+//         const data = await Report.find()
+//             .populate('user')
+//             .populate('item');
+//         console.log(data)
+//         res.json(data)
+
+//     } catch (err) {
+//         next(err)
+//     }
+// })
+
+// router.get('/de/:id', async (req, res) => {
+//     try {
+//         const id = req.params.id;
+
+//         // Find order details by Orders_idOrders and populate the SKUs field
+//         const orderDetails = await Orderdetail.find({ Orders_idOrders: id })
+//         .populate({
+//             path:'SKUs',
+//             populate:{
+//                 path:'SKUs_idSKUs',
+//                 model:'SKUs'
+//             }
+//         })
+//         .populate({
+//             path:'SKUs.SKUs_idSKUs',
+//             populate:{
+//                 path:'Products_idProducts',
+//                 model:'Products'
+//             }
+//         });
+
+//         if (!orderDetails || orderDetails.length === 0) {
+//             return res.status(404).json({ error: 'No order details found for the specified Orders_idOrders' });
+//         }
+
+//         res.json(orderDetails);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'An error occurred while fetching order details' });
+//     }
+//   });
 
 router.post('/addcart', async (req, res, next) => {
     try {
@@ -35,6 +127,7 @@ router.post('/addcart', async (req, res, next) => {
         next(err)
     }
 })
+
 //มาแค่ id
 // router.put('/addskus/:cartId', async (req, res, next) => {
 //     const cartId = req.params.cartId;
@@ -68,7 +161,7 @@ router.post('/addcart', async (req, res, next) => {
 router.put('/addskus/:cartId', async (req, res, next) => {
     const cartId = req.params.cartId;
     const skusData = req.body.SKUs;
-    
+
     try {
         const existingCart = await cart.findOne({ _id: cartId });
 
